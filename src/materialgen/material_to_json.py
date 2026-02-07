@@ -1,7 +1,6 @@
 import bpy
 import mathutils
 import bpy_types
-
 import json
 
 all_nodes = [
@@ -124,29 +123,23 @@ def createMaterialData(input_name: str = "Material") -> bpy.types.Material:
 
 
 ### Set Default Shader Node
-def setDefaultShaderNode(input_mtl_data: bpy.types.Material) -> bpy.types.Material:
+def extractShaderNodeData(
+    input_mtl_data: bpy.types.Material, node_type: str
+) -> bpy.types.Material:
     node_tree = input_mtl_data.node_tree
     nodes = node_tree.nodes
-    links = node_tree.links
-    output_node = nodes.new(type="ShaderNodeOutputMaterial")
-    principled_node = nodes.new(type="ShaderNodeBsdfPrincipled")
-    links.new(principled_node.outputs["BSDF"], output_node.inputs["Surface"])
-    print("-----nodes-----")
-    for i in dir(principled_node):
-        print(f"{i}    :    {getattr(principled_node, i)}")
-    print("-----inputs-----")
-    for i in range(len(principled_node.inputs)):
-        print(principled_node.inputs[i].name)
-    print("-----outputs-----")
-    for i in range(len(principled_node.outputs)):
-        print(principled_node.outputs[i].name)
-    print("----properties----")
-    print(dir(principled_node))
+    temp_node = nodes.new(type=node_type)
+    print(temp_node.inputs.name)
+
     return input_mtl_data
+    # Input:
+    # input_mtl_data = <bpy_struct, Material("NewMaterial") at 0x0000013BC2EA6C88>
+    # Output:
+    # <bpy_struct, Material("NewMaterial") at 0x0000013BC2EA6C88>
 
 
 ### Print Material Data
-def printMaterialData(input_mtl_data: bpy.types.Material):
+def bpyPrintMaterialData(input_mtl_data: bpy.types.Material):
     print(f"Material: {input_mtl_data} {type(input_mtl_data)}")
     print(
         f"- Nodes: {[node_data.name for node_data in input_mtl_data.node_tree.nodes]}"
@@ -166,14 +159,17 @@ def printMaterialData(input_mtl_data: bpy.types.Material):
 
 if __name__ == "__main__":
 
+    material_nodes_data = {}
+
     ### Create Data
     mtl_data = createMaterialData("NewMaterial")
 
     ### Set Data
-    setDefaultShaderNode(mtl_data)
+    for node in all_nodes:
+        mtl_doc = extractShaderNodeData(mtl_data, node)
 
     ### Print Data
-    # bpyPrintMaterialData(mtl_data)
+    bpyPrintMaterialData(mtl_data)
     # Material: <bpy_struct, Material("NewMaterial") at 0x0000013BC2EA6C88> <class 'bpy.types.Material'>
     # - Nodes: ['Material Output', 'Principled BSDF']
     # - Links: [['Principled BSDF', 'Material Output']]
