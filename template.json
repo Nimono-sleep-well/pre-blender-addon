@@ -1,0 +1,36 @@
+{
+    "schema_version": 1,
+    "blender_version": "4.1.0",
+    "nodes": {
+        "ShaderNodeBsdfPrincipled": {
+            "ui_name": "Principled BSDF",
+            "category": "Shader",
+            "inputs": [
+                {
+                    "identifier": "Base Color",
+                    "name": "Base Color",
+                    "socket_type": "NodeSocketColor",
+                    "default_value": [0.8, 0.8, 0.8, 1.0]
+                }
+            ],
+            "outputs": [
+                {
+                    "identifier": "BSDF",
+                    "name": "BSDF",
+                    "socket_type": "NodeSocketShader"
+                }
+            ],
+            "properties": {
+                "distribution": {
+                    "type": "enum",
+                    "default": "GGX",
+                    "items": ["GGX", "MULTI_GGX"]
+                },
+                "subsurface_method": {
+                    "type": "enum",
+                    "default": "RANDOM_WALK"
+                }
+            }
+        }
+    }
+}
